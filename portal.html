@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Pengelolaan - 7 Kebiasaan Anak Indonesia Hebat</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --admin-primary: #4338ca;
+            --admin-secondary: #6366f1;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --bg-app: #f8fafc;
+            --card-bg: #ffffff;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --border-light: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #cbd5e1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            background-color: var(--bg-app);
+            width: 100%;
+            max-width: 480px;
+            height: 100vh;
+            max-height: 900px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        @media (min-width: 481px) {
+            .app-container { height: 90vh; border-radius: 30px; }
+        }
+
+        .admin-header {
+            background: linear-gradient(135deg, var(--admin-primary), var(--admin-secondary));
+            padding: 20px;
+            color: white;
+            position: relative;
+            z-index: 10;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .role-selector {
+            background: rgba(255,255,255,0.2);
+            padding: 6px 12px;
+            border-radius: 14px;
+            color: white;
+            font-weight: 600;
+            font-size: 0.8rem;
+            border: none;
+            outline: none;
+        }
+        .role-selector option { color: var(--text-dark); }
+
+        .back-btn { background: none; border: none; color: white; font-size: 1.1rem; cursor: pointer; }
+
+        .main-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+            padding-bottom: 120px;
+        }
+
+        .portal-pane { display: none; animation: fadeIn 0.3s ease; }
+        .portal-pane.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title { font-size: 1rem; font-weight: 700; color: var(--text-dark); margin-bottom: 12px; }
+
+        .input-box-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid var(--border-light);
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-row { display: flex; gap: 8px; }
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border-light);
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+            outline: none;
+            background: white;
+        }
+        .form-control:focus { border-color: var(--admin-primary); }
+
+        .btn-primary-custom {
+            flex: 1;
+            background: var(--admin-primary);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .action-btn-group {
+            display: flex;
+            gap: 6px;
+        }
+        .btn-edit-custom {
+            background: #f59e0b;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-delete-custom {
+            background: var(--danger-color);
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .data-list-item {
+            background: #f8fafc;
+            border: 1px solid var(--border-light);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+        }
+
+        .control-panel-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid var(--border-light);
+            margin-bottom: 15px;
+        }
+
+        .chart-tab-row { display: flex; gap: 4px; margin-bottom: 10px; background: #e2e8f0; padding: 3px; border-radius: 8px; }
+        .chart-tab-btn { flex: 1; background: none; border: none; padding: 6px; font-size: 0.7rem; font-weight: 600; color: var(--text-muted); border-radius: 6px; cursor: pointer; }
+        .chart-tab-btn.active { background: white; color: var(--admin-primary); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+
+        .vertical-chart-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            height: 160px;
+            background: #f8fafc;
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            padding: 15px 6px 6px 6px;
+            margin: 10px 0;
+            gap: 4px;
+        }
+
+        .v-bar-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+            justify-content: flex-end;
+        }
+
+        .v-bar-track {
+            width: 16px;
+            height: 100px;
+            background: #e2e8f0;
+            border-radius: 6px;
+            display: flex;
+            align-items: flex-end;
+            overflow: hidden;
+        }
+
+        .v-bar-fill { width: 100%; border-radius: 6px; }
+        .v-bar-label { font-size: 0.5rem; color: var(--text-muted); margin-top: 4px; text-align: center; font-weight: 600; }
+
+        .kepsek-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid var(--border-light);
+            margin-bottom: 12px;
+        }
+
+        .btn-logout-bottom {
+            width: 100%;
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 25px;
+            margin-bottom: 20px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        .btn-logout-bottom:hover { background: #fecaca; }
+
+        #printArea { display: none; }
+
+        @media print {
+            body { background: white; }
+            .app-container { box-shadow: none; height: auto; width: 100%; max-width: 100%; border-radius: 0; }
+            .admin-header, .bottom-nav, .main-content > *:not(#printArea) { display: none !important; }
+            #printArea { display: block !important; padding: 20px; color: black; }
+            .print-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; margin-top: 15px; }
+            .print-table th, .print-table td { border: 1px solid #333; padding: 6px; text-align: center; }
+            .print-table th { background: #f1f5f9; }
+        }
+
+        .bottom-nav {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            background: var(--card-bg); display: flex; justify-content: space-around;
+            padding: 12px 10px 18px; box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+            border-top: 1px solid var(--border-light); z-index: 20;
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-muted); font-size: 0.7rem; font-weight: 500; cursor: pointer; }
+        .nav-icon { font-size: 1.3rem; margin-bottom: 2px; }
+        .nav-item.active { color: var(--admin-primary); font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <header class="admin-header">
+            <div class="header-top">
+                <button class="back-btn" onclick="window.location.href='index.html'">❮</button>
+                <select class="role-selector" id="portalRoleSelect" onchange="switchPortalMode(this.value)">
+                    <option value="admin">⚙️ Mode Admin & Setup</option>
+                    <option value="teacher">👩‍🏫 Mode Wali Kelas</option>
+                    <option value="parent">👨‍👩‍👧 Mode Orang Tua</option>
+                    <option value="principal">👨‍💼 Mode Kepala Sekolah</option>
+                </select>
+            </div>
+            <h1 style="font-size: 1.2rem; font-weight: 800; margin: 0;" id="portalTitle">Portal Pengelolaan Sekolah</h1>
+            <p style="font-size: 0.75rem; opacity: 0.9; margin: 0;">7 Kebiasaan Anak Indonesia Hebat</p>
+        </header>
+
+        <main class="main-content">
+            
+            <!-- ADMIN PANEL -->
+            <div id="pane-admin" class="portal-pane">
+                <div class="section-title">Setup & Pengelolaan Data Sekolah</div>
+                
+                <!-- KELOLA SISWA -->
+                <div class="input-box-card">
+                    <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-dark); margin-bottom: 8px;" id="studentFormTitle">➕ Tambah Data Siswa & Berkas CSV</div>
+                    <input type="hidden" id="editStudentIndex" value="-1">
+                    <div class="form-row" style="margin-bottom: 10px;">
+                        <button class="btn-primary-custom" style="background: #0284c7; padding: 8px;" onclick="downloadDataSiswa(event)">Unduh Data 📥</button>
+                        <button class="btn-primary-custom" style="background: #64748b; padding: 8px;" onclick="downloadTemplateCsv(event)">Template Kosong 📄</button>
+                    </div>
+
+                    <!-- Tombol Unggah Berkas CSV -->
+                    <div style="background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px dashed var(--border-light); margin-bottom: 12px;">
+                        <label style="font-size: 0.7rem; font-weight: 700; color: var(--text-dark); display: block; margin-bottom: 4px;">📤 Unggah File Template Siswa (.csv):</label>
+                        <input type="file" id="csvFileUpload" accept=".csv" class="form-control" style="font-size: 0.7rem; margin-bottom: 6px; background: white;">
+                        <button class="btn-primary-custom" style="background: #059669; width: 100%; padding: 8px;" onclick="uploadAndProcessCsv(event)">Unggah & Proses Data 🚀</button>
+                    </div>
+
+                    <div class="form-row">
+                        <input type="text" id="newStudentNisn" class="form-control" placeholder="NISN/NIS...">
+                        <input type="text" id="newStudentClass" class="form-control" placeholder="Kelas (Contoh: VII A)">
+                    </div>
+                    <div class="form-row">
+                        <input type="text" id="newStudentName" class="form-control" placeholder="Nama Lengkap Siswa...">
+                        <input type="text" id="newParentPhone" class="form-control" placeholder="WA Ortu">
+                    </div>
+                    <button class="btn-primary-custom" id="btnSaveStudent" style="width: 100%; margin-bottom: 12px;" onclick="saveStudentData()">Simpan Siswa 💾</button>
+                    <button class="btn-primary-custom" id="btnCancelEditStudent" style="background: #64748b; width: 100%; display: none; margin-bottom: 12px;" onclick="cancelEditStudent()">Batal Edit ❌</button>
+
+                    <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-dark); margin-top: 10px; margin-bottom: 6px;">📋 Daftar Siswa Terdaftar:</div>
+                    <div id="adminStudentListContainer" style="max-height: 180px; overflow-y: auto;"></div>
+                </div>
+
+                <!-- KELOLA WALI KELAS -->
+                <div class="input-box-card" style="border-left: 4px solid var(--success-color);">
+                    <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-dark); margin-bottom: 8px;" id="teacherFormTitle">👩‍🏫 Tambah / Daftar Wali Kelas</div>
+                    <input type="hidden" id="editTeacherIndex" value="-1">
+                    <div class="form-row">
+                        <input type="text" id="newTeacherName" class="form-control" placeholder="Nama Wali Kelas...">
+                        <input type="text" id="newTeacherClass" class="form-control" placeholder="Pegang Kelas (Contoh: VII A)">
+                    </div>
+                    <input type="text" id="newTeacherPhone" class="form-control" placeholder="Nomor WhatsApp Wali Kelas...">
+                    <button class="btn-primary-custom" id="btnSaveTeacher" style="background: var(--success-color); width: 100%; margin-bottom: 8px;" onclick="saveTeacherData()">Simpan Wali Kelas 💾</button>
+                    <button class="btn-primary-custom" id="btnCancelEditTeacher" style="background: #64748b; width: 100%; display: none; margin-bottom: 8px;" onclick="cancelEditTeacher()">Batal Edit ❌</button>
+
+                    <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-dark); margin-top: 10px; margin-bottom: 6px;">📋 Daftar Wali Kelas:</div>
+                    <div id="adminTeacherListContainer" style="max-height: 150px; overflow-y: auto;"></div>
+                </div>
+
+                <!-- KELOLA KEPALA SEKOLAH -->
+                <div class="input-box-card" style="border-left: 4px solid var(--warning-color);">
+                    <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-dark); margin-bottom: 8px;">👨‍💼 Setup Kepala Sekolah</div>
+                    <div class="form-row">
+                        <input type="text" id="newPrincipalName" class="form-control" placeholder="Nama Kepala Sekolah...">
+                        <input type="text" id="newPrincipalPhone" class="form-control" placeholder="Nomor WA Kepala Sekolah...">
+                    </div>
+                    <button class="btn-primary-custom" style="background: var(--warning-color); color: white; width: 100%; margin-bottom: 8px;" onclick="savePrincipalData()">Simpan Kepala Sekolah 💾</button>
+                    <div id="adminPrincipalInfo" style="font-size: 0.75rem; color: var(--text-muted); background: #f8fafc; padding: 8px; border-radius: 6px; margin-top: 6px;"></div>
+                </div>
+
+                <div class="input-box-card" style="background: #fff1f2; border-color: #fecdd3;">
+                    <div style="font-size: 0.8rem; font-weight: 600; color: #9f1239; margin-bottom: 8px;">🔑 Keamanan & Ganti Sandi Admin</div>
+                    <input type="password" id="newAdminPassword" class="form-control" placeholder="Masukkan Password Baru..." style="margin-bottom: 8px;">
+                    <button class="btn-primary-custom" style="background: #e11d48; width: 100%;" onclick="changeAdminPassword()">Perbarui Kata Sandi Admin 🔒</button>
+                </div>
+
+                <button class="btn-logout-bottom" onclick="window.location.href='index.html'">
+                    🚪 Keluar / Tutup Sesi Admin
+                </button>
+            </div>
+
+            <!-- WALI KELAS PANEL -->
+            <div id="pane-teacher" class="portal-pane">
+                <div class="section-title">Pemantauan & Validasi Wali Kelas</div>
+                
+                <div id="teacherStarRewardBanner" style="display: none; background: #fffbeb; border: 1px solid #f59e0b; border-radius: 10px; padding: 12px; margin-bottom: 12px; text-align: center;">
+                    <div style="font-size: 1.1rem;" id="bannerStarsIcon">⭐⭐⭐⭐⭐</div>
+                    <div style="font-size: 0.78rem; font-weight: 700; color: #b45309; margin-top: 2px;" id="bannerTitleText">Selamat! Hari ini, Anda Mendapat Penghargaan Bintang dari Kepala Sekolah</div>
+                    <div style="font-size: 0.7rem; color: #78350f; margin-top: 2px;" id="starRewardMsg">Kepala Sekolah memberikan penghargaan Bintang atas dedikasi dan keaktifan validasi karakter siswa Anda!</div>
+                </div>
+
+                <div class="control-panel-card">
+                    <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-dark); margin-bottom: 6px;">1. Pilih Kelas:</div>
+                    <select id="teacherClassDropdown" class="form-control" style="margin-bottom: 10px;" onchange="onTeacherClassChange()">
+                        <option value="">-- Pilih Kelas --</option>
+                    </select>
+
+                    <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-dark); margin-bottom: 6px;">2. Pilih Nama Siswa:</div>
+                    <select id="teacherStudentDropdown" class="form-control" style="margin-bottom: 10px;" onchange="loadTeacherStudentDetail(this.value)" disabled>
+                        <option value="">-- Pilih Kelas Terlebih Dahulu --</option>
+                    </select>
+
+                    <div id="selectedStudentDetail" style="display: none;">
+                        <div style="background: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 10px; border: 1px solid var(--border-light);">
+                            <div style="font-size: 0.85rem; font-weight: 700; color: var(--admin-primary);" id="detailStudentName">-</div>
+                            <div style="font-size: 0.7rem; color: var(--text-muted);" id="detailSubInfo">NISN: - | WA Ortu: -</div>
+                            <div style="font-size: 0.7rem; color: #1e40af; margin-top: 4px; font-weight: 600;" id="detailDateInfo">📅 Tanggal Pengisian: -</div>
+                        </div>
+
+                        <!-- Bintang Siswa -->
+                        <div style="background: #eff6ff; border: 1px solid #bfdbfe; padding: 12px; border-radius: 8px; margin-bottom: 10px;">
+                            <div style="font-size: 0.75rem; font-weight: 700; color: #1e40af; margin-bottom: 2px;">👦 Bintang untuk Siswa (1 - 5):</div>
+                            <div style="font-size: 0.65rem; color: #1d4ed8; margin-bottom: 6px;" id="teacherStudentStarDateInfo">Tanggal: -</div>
+                            <div style="display: flex; gap: 6px;" id="studentStarRatingContainer">
+                                <button style="background: #e2e8f0; border: none; padding: 6px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 600; cursor: pointer;" onclick="setStudentStars(1)">1 ⭐</button>
+                                <button style="background: #e2e8f0; border: none; padding: 6px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 600; cursor: pointer;" onclick="setStudentStars(2)">2 ⭐</button>
+                                <button style="background: #e2e8f0; border: none; padding: 6px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 600; cursor: pointer;" onclick="setStudentStars(3)">3 ⭐</button>
+                                <button style="background: #e2e8f0; border: none; padding: 6px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 600; cursor: pointer;" onclick="setStudentStars(4)">4 ⭐</button>
+                                <button style="background: #e2e8f0; border: none; padding: 6px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 600; cursor: pointer;" onclick="setStudentStars(5)">5 ⭐</button>
+                            </div>
+                        </div>
+
+                        <!-- Bintang Orang Tua -->
+                        <div id="parentStarSection" style="background: #fffbeb; border: 1px solid #fde68a; padding: 12px; border-radius: 8px; margin-bottom: 15px; display: none;">
+                            <div style="font-size: 0.75rem; font-weight: 700; color: #92400e; margin-bottom: 2px;">👨‍👩‍👧 Bintang untuk Orang Tua (1 - 5):</div>
+                            <div style="font-size: 0.65rem; color: #b45309; margin-bottom: 6px;" id="teacherParentStarDateInfo">Tanggal: -</div>
+                            <div style="display: flex; gap: 6px;" id="parentStarRatingContainer">
+                                <button style="background: #e2e8f0; border: none; padding: 6px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 600; cursor: pointer;" onclick="setParentStars(1)">1 ⭐</button>
+                                <button style="background: #e2e8f0; border: none; padding: 6px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 600; cursor: pointer;" onclick="setParentStars(2)">2 ⭐</button>
+                                <button style="background: #e2e8f0; border: none; padding: 6px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 600; cursor: pointer;" onclick="setParentStars(3)">3 ⭐</button>
+                                <button style="background: #e2e8f0; border: none; padding: 6px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 600; cursor: pointer;" onclick="setParentStars(4)">4 ⭐</button>
+                                <button style="background: #e2e8f0; border: none; padding: 6px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 600; cursor: pointer;" onclick="setParentStars(5)">5 ⭐</button>
+                            </div>
+                        </div>
+                        <div id="parentStarLockedNotice" style="background: #f8fafc; border: 1px dashed var(--border-light); padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 0.7rem; color: var(--text-muted); text-align: center;">
+                            🔒 Bintang Orang Tua terbuka setelah Orang Tua memvalidasi kegiatan anak.
+                        </div>
+
+                        <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-dark); margin-bottom: 6px;">📋 Rincian Isian & Validasi:</div>
+                        <div id="teacherHabitsListContainer" style="margin-bottom: 15px;"></div>
+
+                        <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-dark); margin-top: 10px;">📊 Grafik Analitik Pencapaian:</div>
+                        <div class="chart-tab-row">
+                            <button class="chart-tab-btn active" id="tab-daily" onclick="switchChartPeriod('daily')">Harian</button>
+                            <button class="chart-tab-btn" id="tab-weekly" onclick="switchChartPeriod('weekly')">Mingguan</button>
+                            <button class="chart-tab-btn" id="tab-monthly" onclick="switchChartPeriod('monthly')">Bulanan</button>
+                        </div>
+                        <div class="vertical-chart-container" id="teacherChartContainer" style="margin-bottom: 15px;"></div>
+                    </div>
+                </div>
+
+                <div class="control-panel-card" style="background: #f0fdf4; border-color: #bbf7d0; margin-bottom: 15px;">
+                    <div style="font-size: 0.8rem; font-weight: 700; color: #166534; margin-bottom: 6px;">🖨️ Cetak Rekap Per Kelas</div>
+                    <div class="form-row">
+                        <select id="printClassSelect" class="form-control" style="margin-bottom:0;">
+                            <option value="">-- Pilih Kelas --</option>
+                        </select>
+                        <button class="btn-primary-custom" style="background: var(--success-color); flex: none; padding: 10px 15px;" onclick="triggerPrintClassReport()">Cetak 📄</button>
+                    </div>
+                </div>
+
+                <!-- Tombol Keluar Wali Kelas -->
+                <button class="btn-logout-bottom" onclick="window.location.href='index.html'">
+                    🚪 Keluar / Tutup Sesi Wali Kelas
+                </button>
+            </div>
+
+            <!-- ORANG TUA PANEL -->
+            <div id="pane-parent" class="portal-pane">
+                <div class="section-title">Pantau & Validasi Kebiasaan Anak</div>
+                <div id="parentChildContainer"></div>
+
+                <!-- Tombol Keluar Orang Tua -->
+                <button class="btn-logout-bottom" onclick="window.location.href='index.html'">
+                    🚪 Keluar / Tutup Sesi Orang Tua
+                </button>
+            </div>
+
+            <!-- KEPALA SEKOLAH PANEL -->
+            <div id="pane-principal" class="portal-pane">
+                <div class="section-title">Dashboard Eksekutif Kepala Sekolah</div>
+                
+                <div class="kepsek-card">
+                    <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-dark); margin-bottom: 6px;">📁 Pilih Filter Kelas & Siswa:</div>
+                    <div class="form-row" style="margin-bottom: 8px;">
+                        <select id="kepsekClassFilter" class="form-control" style="margin-bottom:0;" onchange="onKepsekClassChange()">
+                            <option value="all">-- Semua Kelas --</option>
+                        </select>
+                        <select id="kepsekStudentFilter" class="form-control" style="margin-bottom:0;" onchange="loadKepsekStudentDetail(this.value)" disabled>
+                            <option value="">-- Pilih Siswa --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="kepsekDetailSection" style="display: none;">
+                    <div class="kepsek-card" style="background: #f8fafc;">
+                        <div style="font-size: 0.85rem; font-weight: 700; color: var(--admin-primary);" id="kepsekStudentName">-</div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted);" id="kepsekStudentSub">-</div>
+                        <div style="font-size: 0.7rem; color: #1e40af; margin-top: 4px; font-weight: 600;" id="kepsekDateInfo">-</div>
+                    </div>
+
+                    <div class="kepsek-card">
+                        <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-dark); margin-bottom: 6px;">📊 Grafik Analitik (<span id="chartModeLabel">Siswa</span>):</div>
+                        <div class="chart-tab-row">
+                            <button class="chart-tab-btn active" id="kepsek-tab-daily" onclick="switchKepsekChartPeriod('daily')">Harian</button>
+                            <button class="chart-tab-btn" id="kepsek-tab-weekly" onclick="switchKepsekChartPeriod('weekly')">Mingguan</button>
+                            <button class="chart-tab-btn" id="kepsek-tab-monthly" onclick="switchKepsekChartPeriod('monthly')">Bulanan</button>
+                        </div>
+                        <div class="vertical-chart-container" id="kepsekChartContainer"></div>
+                    </div>
+                </div>
+
+                <div class="kepsek-card" style="border-left: 4px solid var(--warning-color);">
+                    <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-dark); margin-bottom: 8px;">👩‍🏫 Audit Kinerja & Reward Bintang Wali Kelas</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px;">Berikan penghargaan Bintang (1 - 5) kepada Wali Kelas berdasarkan keaktifan validasi.</div>
+                    
+                    <div id="kepsekTeacherAuditContainer"></div>
+                </div>
+
+                <!-- Tombol Keluar Kepala Sekolah -->
+                <button class="btn-logout-bottom" onclick="window.location.href='index.html'">
+                    🚪 Keluar / Tutup Sesi Kepala Sekolah
+                </button>
+            </div>
+
+        </main>
+
+        <div id="printArea">
+            <h2 style="text-align: center; font-size: 14pt;">PEMERINTAH KOTA CILEGON</h2>
+            <h3 style="text-align: center; font-size: 12pt; margin-bottom: 15px;">REKAPITULASI 7 KEBIASAAN ANAK INDONESIA HEBAT</h3>
+            <div id="printClassHeader" style="font-size: 10pt; font-weight: bold; margin-bottom: 10px;">Kelas: -</div>
+            <table class="print-table">
+                <thead>
+                    <tr><th>No</th><th>NISN</th><th>Nama Lengkap</th><th>P1</th><th>P2</th><th>P3</th><th>P4</th><th>P5</th><th>P6</th><th>P7</th></tr>
+                </thead>
+                <tbody id="printTableBody"></tbody>
+            </table>
+        </div>
+
+        <nav class="bottom-nav">
+            <div class="nav-item active"><div class="nav-icon">⚙️</div><span id="navTextRole">Portal Sekolah</span></div>
+        </nav>
+
+    </div>
+
+    <script>
+        let studentsList = JSON.parse(localStorage.getItem('app_students')) || [
+            { nisn: "0123456789", name: "Budi Pratama", kelas: "VII A", parentPhone: "081234567890" }
+        ];
+
+        let teachersList = JSON.parse(localStorage.getItem('app_teachers')) || [
+            { name: "Saepul Fadilah", kelas: "VIII-C", phone: "08111111111" }
+        ];
+
+        let principalData = JSON.parse(localStorage.getItem('app_principal')) || { name: "Kepala Sekolah", phone: "-" };
+
+        const listKebiasaanResmi = [
+            "1. Bangun pagi",
+            "2. Beribadah",
+            "3. Berolahraga",
+            "4. Makan sehat dan bergizi",
+            "5. Gemar belajar",
+            "6. Bermasyarakat",
+            "7. Tidur cepat"
+        ];
+
+        function initPortal() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const mode = urlParams.get('mode') || 'teacher';
+            const phone = urlParams.get('phone') || '';
+            
+            if(mode === 'parent') {
+                const roleSelector = document.getElementById('portalRoleSelect');
+                if(roleSelector) roleSelector.style.display = 'none';
+                document.getElementById('portalTitle').innerText = "Portal Orang Tua";
+                renderParentChildView(phone);
+            } else if(mode === 'teacher') {
+                checkTeacherStarReward();
+            } else if(mode === 'admin') {
+                renderAdminLists();
+            }
+
+            switchPortalMode(mode);
+        }
+
+        function checkTeacherStarReward() {
+            const banner = document.getElementById('teacherStarRewardBanner');
+            const icon = document.getElementById('bannerStarsIcon');
+            const titleText = document.getElementById('bannerTitleText');
+            const msg = document.getElementById('starRewardMsg');
+            
+            const starCount = parseInt(localStorage.getItem('teacher_star_count') || '0');
+            const starDate = localStorage.getItem('teacher_star_date') || new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            
+            if(starCount > 0) {
+                banner.style.display = 'block';
+                icon.innerText = "⭐".repeat(starCount);
+                titleText.innerText = `Selamat! Hari ini, ${starDate}, Anda Mendapat Penghargaan Bintang dari Kepala Sekolah`;
+                msg.innerText = `Kepala Sekolah memberikan penghargaan ${starCount} Bintang atas dedikasi dan keaktifan validasi karakter siswa Anda!`;
+            } else {
+                banner.style.display = 'none';
+            }
+        }
+
+        // --- RENDER ORANG TUA ---
+        function renderParentChildView(inputPhone) {
+            const container = document.getElementById('parentChildContainer');
+            const foundChild = studentsList.find(s => s.parentPhone === inputPhone);
+
+            if(!foundChild) {
+                container.innerHTML = `
+                    <div class="kepsek-card" style="border-left: 4px solid var(--danger-color);">
+                        <div style="font-size: 0.85rem; font-weight: 700; color: var(--danger-color);">❌ Data Tidak Ditemukan</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Nomor WhatsApp "${inputPhone}" tidak terdaftar pada data siswa mana pun. Pastikan nomor terdaftar di menu Admin.</div>
+                    </div>`;
+                return;
+            }
+
+            const savedData = JSON.parse(localStorage.getItem(`aktivitas_wa_${foundChild.parentPhone}`)) || {};
+            const details = savedData.details || {};
+            const recordedDate = savedData.tanggalLengkap || "Belum ada tanggal pengisian";
+            const validations = savedData.validations || {};
+            const parentStars = savedData.parentStars || 0;
+            const parentStarDate = savedData.parentStarDate || new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+            let starBadgeHtml = parentStars > 0 ? 
+                `<div style="background: #fffbeb; border: 1px solid #f59e0b; padding: 12px; border-radius: 12px; margin-bottom: 12px; text-align: center;">
+                    <div style="font-size: 1.2rem;">${"⭐".repeat(parentStars)}</div>
+                    <div style="font-size: 0.78rem; font-weight: 700; color: #b45309; margin-top: 4px;">Selamat! Hari ini, ${parentStarDate}, Anda Mendapat Penghargaan Bintang untuk Pendampingan Orang Tua dari Wali Kelas</div>
+                    <div style="font-size: 0.7rem; color: #78350f; margin-top: 2px;">Wali Kelas memberikan ${parentStars} Bintang atas keaktifan dan pendampingan validasi karakter anak di rumah!</div>
+                   </div>` : 
+                `<div style="background: #f8fafc; border: 1px solid var(--border-light); padding: 8px; border-radius: 8px; margin-bottom: 12px; text-align: center; font-size: 0.7rem; color: var(--text-muted);">
+                    ⭐ Bintang Orang Tua akan muncul setelah divalidasi dan diapresiasi oleh Wali Kelas.
+                   </div>`;
+
+            let kebiasaanHtml = '';
+            listKebiasaanResmi.forEach((namaKebiasaan, idx) => {
+                const isiSiswa = details[idx] ? details[idx] : "<span style='color:#991b1b; font-style:italic;'>Belum diisi oleh siswa</span>";
+                const isFilled = !!details[idx];
+                const isValidated = validations[idx] === true;
+                const bgCard = isValidated ? "#f0fdf4" : (isFilled ? "#eff6ff" : "#fef2f2");
+                const statusValText = isValidated ? "✅ Valid (Disetujui Ortu)" : "⏳ Belum Divalidasi";
+                const btnColor = isValidated ? "#10b981" : "#e2e8f0";
+                const btnTextColor = isValidated ? "white" : "#64748b";
+
+                kebiasaanHtml += `
+                    <div style="background: ${bgCard}; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid var(--border-light);">
+                        <div style="font-size: 0.78rem; font-weight: 700; color: var(--text-dark); margin-bottom: 4px;">${namaKebiasaan}</div>
+                        <div style="font-size: 0.72rem; color: var(--text-dark); margin-bottom: 8px; background: white; padding: 6px 8px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                            <strong>Isian Siswa:</strong> ${isiSiswa}
+                        </div>
+                        <button style="background: ${btnColor}; color: ${btnTextColor}; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.7rem; font-weight: 600; cursor: pointer;" onclick="toggleParentValidation(${idx}, '${foundChild.parentPhone}')">
+                            ${statusValText}
+                        </button>
+                    </div>`;
+            });
+
+            container.innerHTML = `
+                <div class="kepsek-card" style="border-left: 4px solid var(--success-color);">
+                    <div style="font-size: 0.9rem; font-weight: 700; color: var(--text-dark);">${foundChild.name}</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">Kelas ${foundChild.kelas} • NISN: ${foundChild.nisn}</div>
+                    <div style="font-size: 0.7rem; color: var(--success-color); margin-top: 6px; font-weight: 600;">✓ Terhubung dengan WA Ortu: ${foundChild.parentPhone}</div>
+                </div>
+
+                ${starBadgeHtml}
+
+                <div class="kepsek-card" style="background: #eff6ff; border-color: #bfdbfe; margin-bottom: 15px;">
+                    <div style="font-size: 0.75rem; font-weight: 700; color: #1e40af;">📅 Tanggal Pengisian Siswa:</div>
+                    <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-dark); margin-top: 2px;">${recordedDate}</div>
+                </div>
+
+                <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-dark); margin-bottom: 8px;">📋 Baca & Validasi Aktivitas Anak:</div>
+                ${kebiasaanHtml}
+            `;
+        }
+
+        function toggleParentValidation(index, parentPhone) {
+            let savedData = JSON.parse(localStorage.getItem(`aktivitas_wa_${parentPhone}`)) || {};
+            if(!savedData.validations) savedData.validations = {};
+            
+            savedData.validations[index] = !savedData.validations[index];
+            localStorage.setItem(`aktivitas_wa_${parentPhone}`, JSON.stringify(savedData));
+
+            renderParentChildView(parentPhone);
+        }
+
+        // --- RENDER WALI KELAS ---
+        function populateClassDropdowns() {
+            const uniqueClasses = [...new Set(studentsList.map(s => s.kelas))].filter(Boolean);
+            
+            const classSelect = document.getElementById('teacherClassDropdown');
+            const printSelect = document.getElementById('printClassSelect');
+            const kepsekFilter = document.getElementById('kepsekClassFilter');
+
+            let options = '<option value="">-- Pilih Kelas --</option>';
+            uniqueClasses.forEach(cls => { options += `<option value="${cls}">${cls}</option>`; });
+
+            if(classSelect) classSelect.innerHTML = options;
+            if(printSelect) printSelect.innerHTML = options;
+
+            if(kepsekFilter) {
+                let kepsekOptions = '<option value="all">-- Semua Kelas Se-Sekolah --</option>';
+                uniqueClasses.forEach(cls => { kepsekOptions += `<option value="${cls}">${cls}</option>`; });
+                kepsekFilter.innerHTML = kepsekOptions;
+            }
+        }
+
+        function onTeacherClassChange() {
+            const selectedClass = document.getElementById('teacherClassDropdown').value;
+            const studentSelect = document.getElementById('teacherStudentDropdown');
+            const detailBox = document.getElementById('selectedStudentDetail');
+
+            detailBox.style.display = "none";
+            if(!selectedClass) {
+                studentSelect.innerHTML = '<option value="">-- Pilih Kelas Terlebih Dahulu --</option>';
+                studentSelect.disabled = true;
+                return;
+            }
+
+            const filteredStudents = studentsList.filter(s => s.kelas === selectedClass);
+            let studentOptions = '<option value="">-- Pilih Nama Siswa --</option>';
+            filteredStudents.forEach((s) => {
+                const originalIndex = studentsList.findIndex(item => item.nisn === s.nisn);
+                studentOptions += `<option value="${originalIndex}">${s.name} (NISN: ${s.nisn})</option>`;
+            });
+
+            studentSelect.innerHTML = studentOptions;
+            studentSelect.disabled = false;
+        }
+
+        let currentActiveStudentForChart = null;
+
+        function loadTeacherStudentDetail(index) {
+            const detailBox = document.getElementById('selectedStudentDetail');
+            if(index === "") { detailBox.style.display = "none"; return; }
+            
+            const s = studentsList[index];
+            currentActiveStudentForChart = s;
+
+            document.getElementById('detailStudentName').innerText = s.name;
+            document.getElementById('detailSubInfo').innerText = `NISN: ${s.nisn} | Kelas: ${s.kelas} | WA Ortu: ${s.parentPhone || "-"}`;
+            
+            const savedData = JSON.parse(localStorage.getItem(`aktivitas_wa_${s.parentPhone}`)) || {};
+            document.getElementById('detailDateInfo').innerText = `📅 Tanggal Pengisian: ${savedData.tanggalLengkap || "Belum ada data"}`;
+
+            const currentStudentStars = savedData.studentStars || 0;
+            const studentStarDate = savedData.studentStarDate || "-";
+            updateStudentStarButtonsUI(currentStudentStars);
+            document.getElementById('teacherStudentStarDateInfo').innerText = `Diberikan pada: ${studentStarDate}`;
+
+            const validations = savedData.validations || {};
+            const hasParentValidated = Object.values(validations).some(v => v === true);
+
+            const parentSection = document.getElementById('parentStarSection');
+            const parentLockedNotice = document.getElementById('parentStarLockedNotice');
+
+            if(hasParentValidated) {
+                parentSection.style.display = 'block';
+                parentLockedNotice.style.display = 'none';
+                const currentParentStars = savedData.parentStars || 0;
+                const parentStarDate = savedData.parentStarDate || "-";
+                updateParentStarButtonsUI(currentParentStars);
+                document.getElementById('teacherParentStarDateInfo').innerText = `Diberikan pada: ${parentStarDate}`;
+            } else {
+                parentSection.style.display = 'none';
+                parentLockedNotice.style.display = 'block';
+            }
+
+            const details = savedData.details || {};
+            const teacherValidations = savedData.teacherValidations || {};
+            let listHtml = '';
+
+            listKebiasaanResmi.forEach((namaKebiasaan, idx) => {
+                const isiSiswa = details[idx] ? details[idx] : "<span style='color:#991b1b; font-style:italic;'>Belum diisi oleh siswa</span>";
+                
+                const isParentValid = validations[idx] === true;
+                const parentStatusBadge = isParentValid ? 
+                    `<span style="color:#10b981; font-weight:600; font-size:0.68rem;">✅ Telah Divalidasi Orang Tua</span>` : 
+                    `<span style="color:#d97706; font-weight:600; font-size:0.68rem;">⏳ Belum Divalidasi Orang Tua</span>`;
+
+                const isTeacherValidated = teacherValidations[idx] === true;
+                const btnColor = isTeacherValidated ? "#10b981" : "#e2e8f0";
+                const btnTextColor = isTeacherValidated ? "white" : "#64748b";
+                const btnText = isTeacherValidated ? "✅ Validasi Wali Kelas (Disetujui)" : "✨ Berikan Validasi Wali Kelas";
+
+                listHtml += `
+                    <div style="background: white; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid var(--border-light);">
+                        <div style="font-size: 0.78rem; font-weight: 700; color: var(--text-dark);">${namaKebiasaan}</div>
+                        <div style="font-size: 0.71rem; color: var(--text-muted); margin: 4px 0;"><strong>Isian:</strong> ${isiSiswa}</div>
+                        <div style="margin: 6px 0; padding: 4px 6px; background: #f8fafc; border-radius: 4px; display: inline-block;">${parentStatusBadge}</div>
+                        <div style="margin-top: 4px;">
+                            <button style="background: ${btnColor}; color: ${btnTextColor}; border: none; padding: 6px 10px; border-radius: 6px; font-size: 0.68rem; font-weight: 600; cursor: pointer; width: 100%;" onclick="toggleTeacherValidation(${index}, ${idx})">
+                                ${btnText}
+                            </button>
+                        </div>
+                    </div>`;
+            });
+
+            document.getElementById('teacherHabitsListContainer').innerHTML = listHtml;
+            renderTeacherChart('daily');
+            detailBox.style.display = "block";
+        }
+
+        function setStudentStars(starCount) {
+            if(!currentActiveStudentForChart) return;
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const todayStr = new Date().toLocaleDateString('id-ID', options);
+
+            let savedData = JSON.parse(localStorage.getItem(`aktivitas_wa_${currentActiveStudentForChart.parentPhone}`)) || {};
+            savedData.studentStars = starCount;
+            savedData.studentStarDate = todayStr;
+            localStorage.setItem(`aktivitas_wa_${currentActiveStudentForChart.parentPhone}`, JSON.stringify(savedData));
+
+            updateStudentStarButtonsUI(starCount);
+            document.getElementById('teacherStudentStarDateInfo').innerText = `Diberikan pada: ${todayStr}`;
+            alert(`🌟 Berhasil memberikan ${starCount} Bintang kepada Siswa (${todayStr})!`);
+        }
+
+        function updateStudentStarButtonsUI(activeCount) {
+            const container = document.getElementById('studentStarRatingContainer');
+            if(!container) return;
+            let html = '';
+            for(let i=1; i<=5; i++) {
+                const isSel = activeCount === i;
+                html += `<button style="background: ${isSel ? '#2563eb' : '#e2e8f0'}; color: ${isSel ? 'white' : '#475569'}; border: none; padding: 6px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 600; cursor: pointer;" onclick="setStudentStars(${i})">${i} ⭐</button>`;
+            }
+            container.innerHTML = html;
+        }
+
+        function setParentStars(starCount) {
+            if(!currentActiveStudentForChart) return;
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const todayStr = new Date().toLocaleDateString('id-ID', options);
+
+            let savedData = JSON.parse(localStorage.getItem(`aktivitas_wa_${currentActiveStudentForChart.parentPhone}`)) || {};
+            savedData.parentStars = starCount;
+            savedData.parentStarDate = todayStr;
+            localStorage.setItem(`aktivitas_wa_${currentActiveStudentForChart.parentPhone}`, JSON.stringify(savedData));
+
+            updateParentStarButtonsUI(starCount);
+            document.getElementById('teacherParentStarDateInfo').innerText = `Diberikan pada: ${todayStr}`;
+            alert(`🌟 Berhasil memberikan ${starCount} Bintang kepada Orang Tua (${todayStr})!`);
+        }
+
+        function updateParentStarButtonsUI(activeCount) {
+            const container = document.getElementById('parentStarRatingContainer');
+            if(!container) return;
+            let html = '';
+            for(let i=1; i<=5; i++) {
+                const isSel = activeCount === i;
+                html += `<button style="background: ${isSel ? '#f59e0b' : '#e2e8f0'}; color: ${isSel ? 'white' : '#475569'}; border: none; padding: 6px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 600; cursor: pointer;" onclick="setParentStars(${i})">${i} ⭐</button>`;
+            }
+            container.innerHTML = html;
+        }
+
+        function toggleTeacherValidation(studentIndex, habitIndex) {
+            const s = studentsList[studentIndex];
+            let savedData = JSON.parse(localStorage.getItem(`aktivitas_wa_${s.parentPhone}`)) || {};
+            
+            if(!savedData.validations || !savedData.validations[habitIndex]) {
+                if(!confirm("⚠️ Perhatian: Orang tua belum memvalidasi poin ini di rumah. Tetap ingin memberikan validasi Wali Kelas?")) {
+                    return;
+                }
+            }
+
+            if(!savedData.teacherValidations) savedData.teacherValidations = {};
+            savedData.teacherValidations[habitIndex] = !savedData.teacherValidations[habitIndex];
+            localStorage.setItem(`aktivitas_wa_${s.parentPhone}`, JSON.stringify(savedData));
+
+            loadTeacherStudentDetail(studentIndex);
+        }
+
+        function switchChartPeriod(period) {
+            document.querySelectorAll('.chart-tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`tab-${period}`).classList.add('active');
+            renderTeacherChart(period);
+        }
+
+        function renderTeacherChart(period) {
+            const container = document.getElementById('teacherChartContainer');
+            if(!currentActiveStudentForChart) return;
+
+            const savedData = JSON.parse(localStorage.getItem(`aktivitas_wa_${currentActiveStudentForChart.parentPhone}`)) || {};
+            const details = savedData.details || {};
+
+            let labels = [];
+            let dataValues = [];
+
+            if(period === 'daily') {
+                labels = ['P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7'];
+                dataValues = labels.map((_, idx) => details[idx] ? 100 : 15);
+            } else if(period === 'weekly') {
+                labels = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+                const filledCount = Object.keys(details).length;
+                dataValues = labels.map(() => filledCount > 0 ? (filledCount * 14) : 20); 
+            } else if(period === 'monthly') {
+                labels = ['M1', 'M2', 'M3', 'M4'];
+                const filledCount = Object.keys(details).length;
+                dataValues = labels.map(() => filledCount > 3 ? 85 : 40);
+            }
+
+            let chartHtml = '';
+            labels.forEach((lbl, i) => {
+                const val = dataValues[i];
+                const barColor = val > 50 ? 'var(--success-color)' : 'var(--warning-color)';
+                chartHtml += `
+                    <div class="v-bar-column">
+                        <div class="v-bar-track">
+                            <div class="v-bar-fill" style="height: ${val}%; background: ${barColor};"></div>
+                        </div>
+                        <div class="v-bar-label">${lbl}</div>
+                    </div>`;
+            });
+
+            container.innerHTML = chartHtml;
+        }
+
+
+        // --- RENDER KEPALA SEKOLAH & AUDIT ---
+        function onKepsekClassChange() {
+            const selectedClass = document.getElementById('kepsekClassFilter').value;
+            const studentFilter = document.getElementById('kepsekStudentFilter');
+            const detailSec = document.getElementById('kepsekDetailSection');
+
+            detailSec.style.display = "none";
+            if(selectedClass === "all") {
+                studentFilter.innerHTML = '<option value="">-- Semua Kelas (Tampilkan Agregat Kelas) --</option>';
+                studentFilter.disabled = false;
+                renderKepsekClassAggregate(null);
+                return;
+            }
+
+            const filteredStudents = studentsList.filter(s => s.kelas === selectedClass);
+            let options = '<option value="">-- Pilih Siswa Tertentu --</option>';
+            filteredStudents.forEach((s) => {
+                const idx = studentsList.findIndex(item => item.nisn === s.nisn);
+                options += `<option value="${idx}">${s.name} (NISN: ${s.nisn})</option>`;
+            });
+
+            studentFilter.innerHTML = options;
+            studentFilter.disabled = false;
+            renderKepsekClassAggregate(selectedClass);
+        }
+
+        let currentKepsekMode = 'student';
+        let currentKepsekTarget = null;
+
+        function loadKepsekStudentDetail(index) {
+            const detailSec = document.getElementById('kepsekDetailSection');
+            if(index === "") {
+                onKepsekClassChange();
+                return;
+            }
+
+            currentKepsekMode = 'student';
+            currentKepsekTarget = studentsList[index];
+
+            document.getElementById('kepsekStudentName').innerText = currentKepsekTarget.name;
+            document.getElementById('kepsekStudentSub').innerText = `Kelas ${currentKepsekTarget.kelas} • NISN: ${currentKepsekTarget.nisn}`;
+            
+            const savedData = JSON.parse(localStorage.getItem(`aktivitas_wa_${currentKepsekTarget.parentPhone}`)) || {};
+            document.getElementById('kepsekDateInfo').innerText = `📅 Tanggal Pengisian: ${savedData.tanggalLengkap || "Belum ada data"}`;
+            document.getElementById('chartModeLabel').innerText = "Siswa";
+
+            renderKepsekChart('daily');
+            detailSec.style.display = "block";
+        }
+
+        function renderKepsekClassAggregate(className) {
+            currentKepsekMode = 'class';
+            currentKepsekTarget = className;
+
+            document.getElementById('kepsekStudentName').innerText = className ? `Rekapitulasi Kelas ${className}` : "Rekapitulasi Seluruh Sekolah";
+            document.getElementById('kepsekStudentSub').innerText = className ? `Total Siswa Terdaftar` : "Statistik Agregat Se-Sekolah";
+            document.getElementById('kepsekDateInfo').innerText = "📊 Mode Tampilan: Agregat Kelas";
+            document.getElementById('chartModeLabel').innerText = "Kelas";
+
+            renderKepsekChart('daily');
+            document.getElementById('kepsekDetailSection').style.display = "block";
+        }
+
+        function switchKepsekChartPeriod(period) {
+            document.querySelectorAll('#pane-principal .chart-tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`kepsek-tab-${period}`).classList.add('active');
+            renderKepsekChart(period);
+        }
+
+        function renderKepsekChart(period) {
+            const container = document.getElementById('kepsekChartContainer');
+            let labels = [];
+            let dataValues = [];
+
+            if(currentKepsekMode === 'student' && currentKepsekTarget) {
+                const savedData = JSON.parse(localStorage.getItem(`aktivitas_wa_${currentKepsekTarget.parentPhone}`)) || {};
+                const details = savedData.details || {};
+
+                if(period === 'daily') {
+                    labels = ['P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7'];
+                    dataValues = labels.map((_, idx) => details[idx] ? 100 : 15);
+                } else if(period === 'weekly') {
+                    labels = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+                    const count = Object.keys(details).length;
+                    dataValues = labels.map(() => count > 0 ? (count * 14) : 25);
+                } else if(period === 'monthly') {
+                    labels = ['M1', 'M2', 'M3', 'M4'];
+                    dataValues = labels.map(() => 75);
+                }
+            } else {
+                if(period === 'daily') {
+                    labels = ['P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7'];
+                    dataValues = [85, 90, 70, 95, 80, 88, 92];
+                } else if(period === 'weekly') {
+                    labels = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+                    dataValues = [88, 91, 85, 90, 93, 70, 60];
+                } else if(period === 'monthly') {
+                    labels = ['M1', 'M2', 'M3', 'M4'];
+                    dataValues = [82, 88, 91, 89];
+                }
+            }
+
+            let chartHtml = '';
+            labels.forEach((lbl, i) => {
+                const val = dataValues[i];
+                const barColor = val > 50 ? 'var(--success-color)' : 'var(--warning-color)';
+                chartHtml += `
+                    <div class="v-bar-column">
+                        <div class="v-bar-track">
+                            <div class="v-bar-fill" style="height: ${val}%; background: ${barColor};"></div>
+                        </div>
+                        <div class="v-bar-label">${lbl}</div>
+                    </div>`;
+            });
+
+            container.innerHTML = chartHtml;
+            renderKepsekTeacherAudit();
+        }
+
+        // --- AUDIT WALI KELAS & REWARD BINTANG ---
+        function renderKepsekTeacherAudit() {
+            const container = document.getElementById('kepsekTeacherAuditContainer');
+            if(!container) return;
+
+            let auditHtml = '';
+            teachersList.forEach((t, index) => {
+                const classStudents = studentsList.filter(s => s.kelas.toLowerCase().trim() === t.kelas.toLowerCase().trim());
+                const totalStudentsInClass = classStudents.length > 0 ? classStudents.length : studentsList.length;
+                
+                let teacherValidatedCount = 0;
+
+                if(classStudents.length > 0) {
+                    classStudents.forEach(s => {
+                        const sd = JSON.parse(localStorage.getItem(`aktivitas_wa_${s.parentPhone}`)) || {};
+                        if(sd.teacherValidations) {
+                            if(Object.values(sd.teacherValidations).some(v => v === true)) {
+                                teacherValidatedCount++;
+                            }
+                        }
+                    });
+                } 
+
+                if(teacherValidatedCount === 0) {
+                    for (let i = 0; i < localStorage.length; i++) {
+                        const key = localStorage.key(i);
+                        if (key.includes('aktivitas_wa_')) {
+                            try {
+                                const sd = JSON.parse(localStorage.getItem(key));
+                                if(sd && sd.teacherValidations && Object.values(sd.teacherValidations).some(v => v === true)) {
+                                    teacherValidatedCount++;
+                                }
+                            } catch(e) {}
+                        }
+                    }
+                }
+
+                const auditStatus = teacherValidatedCount > 0 ? 
+                    `<span style="color:#10b981; font-weight:700;">✅ Aktif Melakukan Validasi (${teacherValidatedCount} dari ${totalStudentsInClass} siswa)</span>` : 
+                    `<span style="color:#ef4444; font-weight:700;">⏳ Belum Ada Validasi Wali Kelas (0 dari ${totalStudentsInClass} siswa)</span>`;
+
+                const teacherId = t.phone || index;
+                const currentStars = parseInt(localStorage.getItem(`teacher_star_count_${teacherId}`) || '0');
+
+                let starButtonsHtml = '';
+                for (let sNum = 1; sNum <= 5; sNum++) {
+                    const isSelected = currentStars === sNum;
+                    const bgBtn = isSelected ? '#f59e0b' : '#f1f5f9';
+                    const fgBtn = isSelected ? 'white' : '#475569';
+                    starButtonsHtml += `
+                        <button style="background: ${bgBtn}; color: ${fgBtn}; border: 1px solid #cbd5e1; padding: 4px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: 600; cursor: pointer;" onclick="setTeacherStars('${teacherId}', ${sNum})">
+                            ${sNum} ⭐
+                        </button>`;
+                }
+
+                auditHtml += `
+                    <div style="background: white; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid var(--border-light);">
+                        <div style="font-size: 0.78rem; font-weight: 700; color: var(--text-dark);">${t.name} (Kelas ${t.kelas})</div>
+                        <div style="font-size: 0.7rem; margin: 4px 0;">Status: ${auditStatus}</div>
+                        <div style="font-size: 0.7rem; font-weight: 600; color: var(--text-muted); margin-top: 6px; margin-bottom: 4px;">Pilih Reward Bintang (1 - 5):</div>
+                        <div style="display: flex; gap: 4px;">
+                            ${starButtonsHtml}
+                        </div>
+                    </div>`;
+            });
+
+            container.innerHTML = auditHtml;
+        }
+
+        function setTeacherStars(teacherId, starCount) {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const todayStr = new Date().toLocaleDateString('id-ID', options);
+
+            localStorage.setItem(`teacher_star_count_${teacherId}`, starCount);
+            localStorage.setItem('teacher_star_count', starCount);
+            localStorage.setItem('teacher_star_date', todayStr);
+            localStorage.setItem('teacher_got_star', starCount > 0 ? 'true' : 'false');
+
+            alert(`🌟 Berhasil memberikan penghargaan ${starCount} Bintang kepada Wali Kelas (${todayStr})!`);
+            renderKepsekTeacherAudit();
+        }
+
+        // --- RENDER & KELOLA DATA ADMIN (SISWA, WALI KELAS, KEPSEK) ---
+        function renderAdminLists() {
+            // 1. Render List Siswa di Admin
+            const studentContainer = document.getElementById('adminStudentListContainer');
+            if(studentContainer) {
+                let html = '';
+                if(studentsList.length === 0) {
+                    html = '<div style="font-size: 0.7rem; color: var(--text-muted); text-align: center; padding: 10px;">Belum ada data siswa.</div>';
+                } else {
+                    studentsList.forEach((s, idx) => {
+                        html += `
+                            <div class="data-list-item">
+                                <div>
+                                    <strong>${s.name}</strong> (${s.kelas})<br>
+                                    <span style="color: var(--text-muted); font-size: 0.68rem;">NISN: ${s.nisn} | WA: ${s.parentPhone || '-'}</span>
+                                </div>
+                                <div class="action-btn-group">
+                                    <button class="btn-edit-custom" onclick="editStudent(${idx})">Edit</button>
+                                    <button class="btn-delete-custom" onclick="deleteStudent(${idx})">Hapus</button>
+                                </div>
+                            </div>`;
+                    });
+                }
+                studentContainer.innerHTML = html;
+            }
+
+            // 2. Render List Wali Kelas di Admin
+            const teacherContainer = document.getElementById('adminTeacherListContainer');
+            if(teacherContainer) {
+                let html = '';
+                if(teachersList.length === 0) {
+                    html = '<div style="font-size: 0.7rem; color: var(--text-muted); text-align: center; padding: 10px;">Belum ada data wali kelas.</div>';
+                } else {
+                    teachersList.forEach((t, idx) => {
+                        html += `
+                            <div class="data-list-item">
+                                <div>
+                                    <strong>${t.name}</strong><br>
+                                    <span style="color: var(--text-muted); font-size: 0.68rem;">Kelas: ${t.kelas} | WA: ${t.phone || '-'}</span>
+                                </div>
+                                <div class="action-btn-group">
+                                    <button class="btn-edit-custom" onclick="editTeacher(${idx})">Edit</button>
+                                    <button class="btn-delete-custom" onclick="deleteTeacher(${idx})">Hapus</button>
+                                </div>
+                            </div>`;
+                    });
+                }
+                teacherContainer.innerHTML = html;
+            }
+
+            // 3. Tampilkan Info Kepala Sekolah Saat Ini
+            const kepsekInfo = document.getElementById('adminPrincipalInfo');
+            if(kepsekInfo) {
+                kepsekInfo.innerHTML = `<strong>Kepala Sekolah Aktif:</strong> ${principalData.name} <br><span style="font-size: 0.68rem;">WA: ${principalData.phone}</span>`;
+            }
+        }
+
+        // --- MANIPULASI DATA SISWA ---
+        function saveStudentData() {
+            const nisn = document.getElementById('newStudentNisn').value.trim();
+            const kelas = document.getElementById('newStudentClass').value.trim();
+            const name = document.getElementById('newStudentName').value.trim();
+            const parentPhone = document.getElementById('newParentPhone').value.trim();
+            const editIndex = parseInt(document.getElementById('editStudentIndex').value);
+
+            if(!nisn || !name || !kelas) { alert("⚠️ Lengkapi data NISN, Nama, dan Kelas siswa!"); return; }
+
+            if(editIndex === -1) {
+                studentsList.push({ nisn, name, kelas, parentPhone });
+                alert(`✅ Siswa "${name}" berhasil ditambahkan ke kelas ${kelas}!`);
+            } else {
+                studentsList[editIndex] = { nisn, name, kelas, parentPhone };
+                alert(`✅ Data siswa "${name}" berhasil diperbarui!`);
+                cancelEditStudent();
+            }
+
+            saveToStorage();
+            populateClassDropdowns();
+            renderAdminLists();
+            
+            document.getElementById('newStudentNisn').value = '';
+            document.getElementById('newStudentClass').value = '';
+            document.getElementById('newStudentName').value = '';
+            document.getElementById('newParentPhone').value = '';
+        }
+
+        function editStudent(index) {
+            const s = studentsList[index];
+            document.getElementById('newStudentNisn').value = s.nisn;
+            document.getElementById('newStudentClass').value = s.kelas;
+            document.getElementById('newStudentName').value = s.name;
+            document.getElementById('newParentPhone').value = s.parentPhone || '';
+            document.getElementById('editStudentIndex').value = index;
+
+            document.getElementById('studentFormTitle').innerText = "✏️ Edit Data Siswa";
+            document.getElementById('btnSaveStudent').innerText = "Perbarui Siswa 💾";
+            document.getElementById('btnCancelEditStudent').style.display = "block";
+        }
+
+        function cancelEditStudent() {
+            document.getElementById('newStudentNisn').value = '';
+            document.getElementById('newStudentClass').value = '';
+            document.getElementById('newStudentName').value = '';
+            document.getElementById('newParentPhone').value = '';
+            document.getElementById('editStudentIndex').value = "-1";
+
+            document.getElementById('studentFormTitle').innerText = "➕ Tambah Data Siswa & Berkas CSV";
+            document.getElementById('btnSaveStudent').innerText = "Simpan Siswa 💾";
+            document.getElementById('btnCancelEditStudent').style.display = "none";
+        }
+
+        function deleteStudent(index) {
+            const s = studentsList[index];
+            if(confirm(`⚠️ Apakah Anda yakin ingin menghapus siswa "${s.name}"?`)) {
+                studentsList.splice(index, 1);
+                saveToStorage();
+                populateClassDropdowns();
+                renderAdminLists();
+                alert("🗑️ Data siswa berhasil dihapus.");
+            }
+        }
+
+        // --- MANIPULASI DATA WALI KELAS ---
+        function saveTeacherData() {
+            const name = document.getElementById('newTeacherName').value.trim();
+            const kelas = document.getElementById('newTeacherClass').value.trim();
+            const phone = document.getElementById('newTeacherPhone').value.trim();
+            const editIndex = parseInt(document.getElementById('editTeacherIndex').value);
+
+            if(!name || !kelas) { alert("⚠️ Masukkan nama wali kelas dan kelas pegangannya!"); return; }
+
+            if(editIndex === -1) {
+                teachersList.push({ name, kelas, phone });
+                alert(`✅ Wali Kelas "${name}" untuk kelas ${kelas} berhasil disimpan!`);
+            } else {
+                teachersList[editIndex] = { name, kelas, phone };
+                alert(`✅ Data Wali Kelas "${name}" berhasil diperbarui!`);
+                cancelEditTeacher();
+            }
+
+            saveToStorage();
+            renderAdminLists();
+
+            document.getElementById('newTeacherName').value = '';
+            document.getElementById('newTeacherClass').value = '';
+            document.getElementById('newTeacherPhone').value = '';
+        }
+
+        function editTeacher(index) {
+            const t = teachersList[index];
+            document.getElementById('newTeacherName').value = t.name;
+            document.getElementById('newTeacherClass').value = t.kelas;
+            document.getElementById('newTeacherPhone').value = t.phone || '';
+            document.getElementById('editTeacherIndex').value = index;
+
+            document.getElementById('teacherFormTitle').innerText = "✏️ Edit Data Wali Kelas";
+            document.getElementById('btnSaveTeacher').innerText = "Perbarui Wali Kelas 💾";
+            document.getElementById('btnCancelEditTeacher').style.display = "block";
+        }
+
+        function cancelEditTeacher() {
+            document.getElementById('newTeacherName').value = '';
+            document.getElementById('newTeacherClass').value = '';
+            document.getElementById('newTeacherPhone').value = '';
+            document.getElementById('editTeacherIndex').value = "-1";
+
+            document.getElementById('teacherFormTitle').innerText = "👩‍🏫 Tambah / Daftar Wali Kelas";
+            document.getElementById('btnSaveTeacher').innerText = "Simpan Wali Kelas 💾";
+            document.getElementById('btnCancelEditTeacher').style.display = "none";
+        }
+
+        function deleteTeacher(index) {
+            const t = teachersList[index];
+            if(confirm(`⚠️ Apakah Anda yakin ingin menghapus wali kelas "${t.name}"?`)) {
+                teachersList.splice(index, 1);
+                saveToStorage();
+                renderAdminLists();
+                alert("🗑️ Data wali kelas berhasil dihapus.");
+            }
+        }
+
+        function savePrincipalData() {
+            const name = document.getElementById('newPrincipalName').value.trim();
+            const phone = document.getElementById('newPrincipalPhone').value.trim();
+
+            if(!name) { alert("⚠️ Masukkan nama Kepala Sekolah!"); return; }
+
+            principalData = { name, phone };
+            saveToStorage();
+            renderAdminLists();
+            alert(`✅ Kepala Sekolah "${name}" berhasil diperbarui!`);
+            
+            document.getElementById('newPrincipalName').value = '';
+            document.getElementById('newPrincipalPhone').value = '';
+        }
+
+        // --- FUNGSI UNGGAH & PROSES CSV OTOMATIS ---
+        function uploadAndProcessCsv(event) {
+            event.preventDefault();
+            const fileInput = document.getElementById('csvFileUpload');
+            const file = fileInput.files[0];
+
+            if(!file) {
+                alert("⚠️ Pilih file CSV terlebih dahulu menggunakan tombol Pilih File!");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                const lines = text.split('\n');
+                let addedCount = 0;
+
+                for(let i = 1; i < lines.length; i++) {
+                    let line = lines[i].trim();
+                    if(!line) continue;
+
+                    let row = [];
+                    let inQuotes = false;
+                    let currentVal = '';
+                    for (let char of line) {
+                        if (char === '"') {
+                            inQuotes = !inQuotes;
+                        } else if (char === ',' && !inQuotes) {
+                            row.push(currentVal.trim().replace(/^["']|["']$/g, ''));
+                            currentVal = '';
+                        } else {
+                            currentVal += char;
+                        }
+                    }
+                    row.push(currentVal.trim().replace(/^["']|["']$/g, ''));
+
+                    if(row.length >= 3) {
+                        const nisn = row[0];
+                        const name = row[1];
+                        const kelas = row[2];
+                        const parentPhone = row[3] || '';
+
+                        if(nisn && name && kelas) {
+                            const exists = studentsList.some(s => s.nisn === nisn);
+                            if(!exists) {
+                                studentsList.push({ nisn, name, kelas, parentPhone });
+                                addedCount++;
+                            }
+                        }
+                    }
+                }
+
+                if(addedCount > 0) {
+                    saveToStorage();
+                    populateClassDropdowns();
+                    renderAdminLists();
+                    alert(`✅ Berhasil mengunggah dan menambahkan ${addedCount} data siswa baru ke sistem!`);
+                    fileInput.value = '';
+                } else {
+                    alert("⚠️ Tidak ada data valid yang dapat dibaca atau data siswa sudah terdaftar sebelumnya.");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // --- ADMIN & STORAGE UTILS ---
+        function saveToStorage() {
+            localStorage.setItem('app_students', JSON.stringify(studentsList));
+            localStorage.setItem('app_teachers', JSON.stringify(teachersList));
+            localStorage.setItem('app_principal', JSON.stringify(principalData));
+        }
+
+        function changeAdminPassword() {
+            const newPw = document.getElementById('newAdminPassword').value.trim();
+            if(!newPw) { alert("⚠️ Masukkan password baru terlebih dahulu!"); return; }
+            localStorage.setItem('custom_admin_password', newPw);
+            alert("🔐 Kata sandi admin berhasil diperbarui!");
+            document.getElementById('newAdminPassword').value = '';
+        }
+
+        function triggerPrintClassReport() {
+            const selectedClass = document.getElementById('printClassSelect').value;
+            if(!selectedClass) { alert("⚠️ Pilih kelas terlebih dahulu!"); return; }
+
+            const classStudents = studentsList.filter(s => s.kelas === selectedClass);
+            const tbody = document.getElementById('printTableBody');
+            tbody.innerHTML = '';
+
+            classStudents.forEach((s, idx) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${idx + 1}</td><td>${s.nisn}</td><td style="text-align: left; padding-left: 8px;">${s.name}</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td>`;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('printClassHeader').innerText = `Kelas: ${selectedClass} | Jumlah Siswa: ${classStudents.length}`;
+            window.print();
+        }
+
+        function downloadDataSiswa(event) {
+            event.preventDefault();
+            let currentStudents = JSON.parse(localStorage.getItem('app_students')) || [];
+            if(currentStudents.length === 0) { alert("⚠️ Belum ada data siswa yang tersimpan untuk diunduh!"); return; }
+
+            let csvContent = "nisn_nis,nama_lengkap,kelas,no_wa_ortu\n";
+            currentStudents.forEach(s => {
+                csvContent += `${s.nisn},"${s.name}",${s.kelas},${s.parentPhone || '-'}\n`;
+            });
+            triggerCsvDownload(csvContent, 'data_siswa_terkumpul.csv');
+        }
+
+        function downloadTemplateCsv(event) {
+            event.preventDefault();
+            let csvContent = "nisn_nis,nama_lengkap,kelas,no_wa_ortu\n0123456789,\"Contoh Nama Siswa\",\"VII A\",\"081234567890\"\n";
+            triggerCsvDownload(csvContent, 'template_input_siswa.csv');
+        }
+
+        function triggerCsvDownload(content, filename) {
+            const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = filename;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        }
+
+        function switchPortalMode(role) {
+            document.querySelectorAll('.portal-pane').forEach(p => p.classList.remove('active'));
+            const roleSel = document.getElementById('portalRoleSelect');
+            if(roleSel) roleSel.value = role;
+
+            if(role === 'admin') {
+                document.getElementById('pane-admin').classList.add('active');
+                renderAdminLists();
+            } else if(role === 'teacher') {
+                document.getElementById('pane-teacher').classList.add('active');
+                populateClassDropdowns();
+                checkTeacherStarReward();
+            } else if(role === 'parent') {
+                document.getElementById('pane-parent').classList.add('active');
+            } else if(role === 'principal') {
+                document.getElementById('pane-principal').classList.add('active');
+                populateClassDropdowns();
+                onKepsekClassChange();
+            }
+        }
+
+        initPortal();
+    </script>
+</body>
+</html>
